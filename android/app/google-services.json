@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "544317065392",
+    "project_id": "portstacks",
+    "storage_bucket": "portstacks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544317065392:android:3a965582d2e35ea316d375",
+        "android_client_info": {
+          "package_name": "com.revoltronx.portstacks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544317065392-ei2vbtqj8hv4cahmbkcb1cvv5l7altmo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.revoltronx.portstacks",
+            "certificate_hash": "645f257f261a8352b7674bab0bd85e9190e4e848"
+          }
+        },
+        {
+          "client_id": "544317065392-redanom8lmhsv8qq26sup1nj613tqtbs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb7c89zodQH-4kObG_k-NF9gQHveh-G2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544317065392-redanom8lmhsv8qq26sup1nj613tqtbs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
