@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
 import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
 import 'package:portstacks1/myportfolio/models/portfoliomodel.dart';
 import 'package:yahoofin/yahoofin.dart';
@@ -101,9 +102,13 @@ class _NewPositionState extends State<NewPosition> {
                               "price": price,
                               "quant": quantity
                             };
-                            // TODO update username.
+
+                            String userid =
+                                BlocProvider.of<AuthenticateBloc>(context)
+                                    .state
+                                    .userId;
                             BlocProvider.of<MyportfolioBloc>(context).add(
-                                MyportfolioUpdate("myuser", widget.portfolio));
+                                MyportfolioUpdate(userid, widget.portfolio));
                             Navigator.pop(context);
                           },
                           child: Text("Add Position"),

@@ -78,7 +78,7 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        "Total Cost: ${calculations.calculateTotal(widget.portfolio)}"),
+                        "Total Cost: ${calculations.calculateTotal(widget.portfolio).toStringAsFixed(2)}"),
                     Text("Returns: ${totalCurrent.toStringAsFixed(1)}"),
                   ],
                 ),

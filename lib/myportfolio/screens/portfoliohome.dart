@@ -19,10 +19,8 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
   _loadPortfolios() async {
     String userid = BlocProvider.of<AuthenticateBloc>(context).state.userId;
-    // TODO use userid
 
-    BlocProvider.of<MyportfolioBloc>(context)
-        .add(MyportfolioFetchAll("myuser"));
+    BlocProvider.of<MyportfolioBloc>(context).add(MyportfolioFetchAll(userid));
   }
 
   @override
@@ -61,7 +59,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     portfolios: state.portfolios,
                   ),
                   Text(
-                    "Combined Portfolio Value",
+                    "My Portfolio Stack",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -86,9 +84,13 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                               direction: DismissDirection.endToStart,
                               key: Key(state.portfolios[index].id),
                               onDismissed: (direction) {
+                                String userid =
+                                    BlocProvider.of<AuthenticateBloc>(context)
+                                        .state
+                                        .userId;
                                 BlocProvider.of<MyportfolioBloc>(context).add(
                                     MyportfolioDelete(
-                                        "myuser",
+                                        userid,
                                         state.portfolios[index].id,
                                         state.portfolios));
                                 state.portfolios.removeAt(index);
@@ -123,8 +125,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 child: Text(state.message),
               );
             } else if (state is MyportfolioUploaded) {
+              String userid =
+                  BlocProvider.of<AuthenticateBloc>(context).state.userId;
               BlocProvider.of<MyportfolioBloc>(context)
-                  .add(MyportfolioFetchAll("myuser"));
+                  .add(MyportfolioFetchAll(userid));
               return Center(
                 child: CircularProgressIndicator(),
               );

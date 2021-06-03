@@ -119,7 +119,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           );
-        } else if (state is AuthenticateLoadingState) {
+        } else if (state is AuthenticateLoadingState ||
+            state is AuthenticateLoggedIn) {
           return Center(
             child: CircularProgressIndicator(),
           );
