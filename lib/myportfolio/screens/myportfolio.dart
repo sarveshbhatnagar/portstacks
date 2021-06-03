@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
+import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
 import 'package:portstacks1/myportfolio/models/portfoliomodel.dart';
 import 'package:portstacks1/router/app_router.dart';
 
+// TODO update on tap, add positions etc.
 class MyPortfolio extends StatefulWidget {
   final PortfolioModel portfolio;
   MyPortfolio({this.portfolio});
@@ -89,7 +93,6 @@ class _MyPortfolioState extends State<MyPortfolio> {
             height: MediaQuery.of(context).size.height / 1.4,
             child: ListView.builder(
               itemBuilder: (context, index) {
-                // TODO return share card
                 return Dismissible(
                   key: Key(widget.portfolio.stocks[index]),
                   child: ListTile(
@@ -98,8 +101,14 @@ class _MyPortfolioState extends State<MyPortfolio> {
                         "Quantity: ${widget.portfolio.data[widget.portfolio.stocks[index]]['quant']} Rate: ${widget.portfolio.data[widget.portfolio.stocks[index]]['price']}"),
                   ),
                   onDismissed: (_) {
-                    // TODO remove a stock from portfolio
+                    String stock = widget.portfolio.stocks[index];
+                    widget.portfolio.data.remove(stock);
                     widget.portfolio.stocks.removeAt(index);
+                    String userid =
+                        BlocProvider.of<AuthenticateBloc>(context).state.userId;
+
+                    BlocProvider.of<MyportfolioBloc>(context)
+                        .add(MyportfolioUpdate(userid, widget.portfolio));
                     setState(() {});
                   },
                 );

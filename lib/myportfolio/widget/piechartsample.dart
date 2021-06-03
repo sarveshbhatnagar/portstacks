@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:portstacks1/myportfolio/models/portfoliomodel.dart';
 import 'package:portstacks1/myportfolio/services/portfolio_calculator.dart';
+import '../services/portfolio_calculator.dart';
 import 'indicator.dart';
 
+// TODO pie chart based on returns.
+// TODO showing orignal investment/current portfolio.
 class PieChartPortfolio extends StatefulWidget {
   final List<PortfolioModel> portfolios;
   PieChartPortfolio({this.portfolios});
@@ -15,6 +18,26 @@ class PieChartPortfolio extends StatefulWidget {
 
 class _PieChartPortfolioState extends State<PieChartPortfolio> {
   int touchedIndex;
+
+  List<Map<String, num>> portfolioCurrent;
+
+  bool isInitialized = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    final calculations = PortfolioCalculations();
+    calculations.calculateCurrentModels(widget.portfolios).then((value) {
+      portfolioCurrent = value;
+      print(value);
+
+      setState(() {
+        isInitialized = true;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.portfolios.length > 0
@@ -54,7 +77,9 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
                           ),
                           sectionsSpace: 0,
                           centerSpaceRadius: 40,
-                          sections: showingSections(widget.portfolios),
+                          sections: isInitialized
+                              ? showingSectionsCurrent(portfolioCurrent)
+                              : showingSections(widget.portfolios),
                         ),
                       ),
                     ),
@@ -108,6 +133,33 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
     ];
   }
 
+  List<PieChartSectionData> showingSectionsCurrent(
+      List<Map<String, num>> portfolios) {
+    return List.generate(portfolios.length, (i) {
+      final isTouched = i == touchedIndex;
+      final double fontSize = isTouched ? 20 : 10;
+      final double radius = isTouched ? 70 : 60;
+      List colors = [
+        Colors.redAccent,
+        Colors.greenAccent,
+        Colors.blueAccent,
+        Colors.greenAccent,
+      ];
+      print("PORT : $portfolios");
+      // TODO make key different as same keys will collide.
+      return PieChartSectionData(
+        color: colors[i % 4],
+        value: portfolios[i][portfolios[i].keys.first],
+        title: portfolios[i].keys.first,
+        radius: radius,
+        titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xffffffff)),
+      );
+    });
+  }
+
   List<PieChartSectionData> showingSections(List<PortfolioModel> portfolios) {
     PortfolioCalculations calculations = PortfolioCalculations();
 
@@ -115,12 +167,20 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
       final isTouched = i == touchedIndex;
       final double fontSize = isTouched ? 20 : 10;
       final double radius = isTouched ? 70 : 60;
-      List colors = [Colors.redAccent, Colors.greenAccent, Colors.blueAccent];
+      List colors = [
+        Colors.redAccent,
+        Colors.greenAccent,
+        Colors.blueAccent,
+        Colors.amberAccent,
+        Colors.cyanAccent,
+        Colors.deepOrangeAccent
+      ];
       return PieChartSectionData(
-        color: colors[i % 3],
+        color: colors[i % 6],
         value: calculations.calculateTotal(portfolios[i]).toDouble(),
         title: portfolios[i].portfolioName,
         radius: radius,
+        showTitle: true,
         titleStyle: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,

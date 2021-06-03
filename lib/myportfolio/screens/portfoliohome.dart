@@ -5,12 +5,14 @@ import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
 import 'package:portstacks1/myportfolio/widget/piechartsample.dart';
 import 'package:portstacks1/myportfolio/widget/portfoliosummary.dart';
 
+// TODO navigation drawer
 class PortfolioHome extends StatefulWidget {
   @override
   _PortfolioHomeState createState() => _PortfolioHomeState();
 }
 
 class _PortfolioHomeState extends State<PortfolioHome> {
+  List<Map<String, num>> currentvalues;
   @override
   void initState() {
     super.initState();
@@ -116,7 +118,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 child: Text("No Portfolios Yet"),
               );
             } else if (state is MyportfolioEmpty) {
-              // TODO Empty portfolio
               return Center(
                 child: Text("No Portfolios Yet"),
               );

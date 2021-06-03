@@ -22,7 +22,7 @@ void main() async {
   PortfolioModel mod =
       await portfolio.getPortfolio("myuser", "7hBx5Qb8HNNC1npBZBnB");
 
-  num t = await calculations.calculateCurrent(mod);
+  num t = await calculations.calculateCurrentReturns(mod);
 
   bool pdeleted =
       await portfolio.deletePortfolio("myuser", "o4F8VziJxP84ySyN6qcF");

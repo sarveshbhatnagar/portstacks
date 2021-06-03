@@ -27,7 +27,7 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   }
 
   Future<num> totals() async {
-    return await calculations.calculateCurrent(widget.portfolio);
+    return await calculations.calculateCurrentReturns(widget.portfolio);
   }
 
   @override
