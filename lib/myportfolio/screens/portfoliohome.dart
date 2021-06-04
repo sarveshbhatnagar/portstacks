@@ -4,6 +4,7 @@ import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
 import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
 import 'package:portstacks1/myportfolio/widget/piechartsample.dart';
 import 'package:portstacks1/myportfolio/widget/portfoliosummary.dart';
+import 'package:portstacks1/router/drawer_widget.dart';
 
 // TODO navigation drawer
 class PortfolioHome extends StatefulWidget {
@@ -35,21 +36,23 @@ class _PortfolioHomeState extends State<PortfolioHome> {
             Navigator.pushNamed(context, '/addposition');
           },
         ),
+        drawer: DrawerWidget(),
         appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              BlocProvider.of<AuthenticateBloc>(context)
-                  .add(AuthenticateUserLogout());
+          // leading: IconButton(
+          //   icon: Icon(
+          //     Icons.menu,
+          //     color: Colors.black,
+          //   ),
+          //   onPressed: () {
+          // BlocProvider.of<AuthenticateBloc>(context)
+          //     .add(AuthenticateUserLogout());
 
-              Navigator.popAndPushNamed(context, "/");
-            },
-          ),
+          // Navigator.popAndPushNamed(context, "/");
+          //   },
+          // ),
         ),
         body: BlocBuilder<MyportfolioBloc, MyportfolioState>(
           builder: (context, state) {
@@ -95,10 +98,12 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                                         userid,
                                         state.portfolios[index].id,
                                         state.portfolios));
-                                state.portfolios.removeAt(index);
+                                // state.portfolios.removeAt(index);
                                 // FOR some reason this is working.
 
-                                setState(() {});
+                                setState(() {
+                                  state.portfolios.removeAt(index);
+                                });
                               },
                               child: PortfolioSummary(
                                 name: state.portfolios[index].portfolioName,
@@ -134,7 +139,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 child: CircularProgressIndicator(),
               );
             } else {
-              print(state);
               return Center(
                 child: Text(
                     "Some uncaught error occured, please contact developer@revoltronx.com"),

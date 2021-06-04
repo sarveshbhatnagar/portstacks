@@ -22,7 +22,7 @@ class MyportfolioBloc extends Bloc<MyportfolioEvent, MyportfolioState> {
       try {
         List<PortfolioModel> portfolios =
             await service.getPortfolios(event.userid);
-        print("Retrieved Portfolios");
+
         yield MyportfolioLoaded(portfolios: portfolios);
       } catch (e) {
         yield MyportfolioError(message: e.toString());
@@ -60,6 +60,8 @@ class MyportfolioBloc extends Bloc<MyportfolioEvent, MyportfolioState> {
       bool deleted =
           await service.deletePortfolio(event.userid, event.portfolioId);
       if (deleted) {
+        event.portfolios
+            .removeWhere((element) => element.id == event.portfolioId);
         yield MyportfolioLoaded(portfolios: event.portfolios);
       } else {
         yield MyportfolioError(message: "Unable to delete for some reason");

@@ -16,7 +16,6 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
   Stream<AuthenticateState> mapEventToState(
     AuthenticateEvent event,
   ) async* {
-    print(event);
     if (event is AuthenticateUserLogin) {
       yield AuthenticateLoadingState();
       try {
@@ -41,7 +40,6 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
           userId: cred.user.uid,
         );
       } catch (error) {
-        print(error.toString());
         yield AuthenticateError(
           errorMessage: error.toString(),
         );
@@ -49,9 +47,8 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
     } else if (event is AuthenticateUserLogout) {
       yield AuthenticateLoadingState();
       try {
-        print("LOGGING OUT");
         authService.logoutUser();
-        print("Logged Out");
+
         yield AuthenticateInitial();
       } catch (e) {
         AuthenticateError(errorMessage: "Unable to logout");

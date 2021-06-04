@@ -97,7 +97,7 @@ class _NewPositionState extends State<NewPosition> {
                         ElevatedButton(
                           onPressed: () {
                             widget.portfolio.stocks.add(symbol);
-                            print(widget.portfolio.data);
+
                             widget.portfolio.data[symbol] = {
                               "price": price,
                               "quant": quantity

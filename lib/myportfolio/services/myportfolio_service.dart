@@ -19,8 +19,6 @@ class MyPortfolioService {
     final response =
         await client.get(Uri.https(apiUrl, getPortfoliosUrl + "/$userid"));
 
-    print(response.statusCode);
-
     List<dynamic> lis = jsonDecode(response.body);
 
     List<PortfolioModel> portfolios = [];
@@ -40,7 +38,7 @@ class MyPortfolioService {
 
   Future<bool> addPortfolio(String userid, PortfolioModel portfolio) async {
     Map<String, dynamic> params = portfolio.toJson();
-    print(params);
+
     final response = await http.post(
       Uri.parse(
           "https://us-central1-portstacks.cloudfunctions.net/app/api/portfolio/v1/addportfolio/$userid"),
@@ -49,12 +47,10 @@ class MyPortfolioService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    print("HEREEE");
+
     if (response.statusCode == 200) {
       return true;
     } else {
-      print(response.statusCode);
-      print(response.body);
       return false;
     }
   }
@@ -63,7 +59,6 @@ class MyPortfolioService {
     final response = await http.delete(Uri.parse(
         "https://us-central1-portstacks.cloudfunctions.net/app/api/portfolio/v1/deleteportfolio/$userid/$portfolioId"));
 
-    print("CALLEDDDDD");
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -84,8 +79,6 @@ class MyPortfolioService {
     if (response.statusCode == 200) {
       return true;
     } else {
-      print(response.statusCode);
-      print(response.body);
       return false;
     }
   }

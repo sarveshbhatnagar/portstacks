@@ -7,6 +7,7 @@ import '../services/portfolio_calculator.dart';
 import 'indicator.dart';
 
 // TODO pie chart based on returns.
+// TODO update after deleting a portfolio.
 // TODO showing orignal investment/current portfolio.
 class PieChartPortfolio extends StatefulWidget {
   final List<PortfolioModel> portfolios;
@@ -29,11 +30,12 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
     final calculations = PortfolioCalculations();
     calculations.calculateCurrentModels(widget.portfolios).then((value) {
       portfolioCurrent = value;
-      print(value);
 
-      setState(() {
-        isInitialized = true;
-      });
+      if (mounted) {
+        setState(() {
+          isInitialized = true;
+        });
+      }
     });
     super.initState();
   }
@@ -58,19 +60,21 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
                         PieChartData(
                           pieTouchData:
                               PieTouchData(touchCallback: (pieTouchResponse) {
-                            setState(() {
-                              final desiredTouch = pieTouchResponse.touchInput
-                                      is! PointerExitEvent &&
-                                  pieTouchResponse.touchInput
-                                      is! PointerUpEvent;
-                              if (desiredTouch &&
-                                  pieTouchResponse.touchedSection != null) {
-                                touchedIndex = pieTouchResponse
-                                    .touchedSection.touchedSectionIndex;
-                              } else {
-                                touchedIndex = -1;
-                              }
-                            });
+                            if (mounted) {
+                              setState(() {
+                                final desiredTouch = pieTouchResponse.touchInput
+                                        is! PointerExitEvent &&
+                                    pieTouchResponse.touchInput
+                                        is! PointerUpEvent;
+                                if (desiredTouch &&
+                                    pieTouchResponse.touchedSection != null) {
+                                  touchedIndex = pieTouchResponse
+                                      .touchedSection.touchedSectionIndex;
+                                } else {
+                                  touchedIndex = -1;
+                                }
+                              });
+                            }
                           }),
                           borderData: FlBorderData(
                             show: false,
@@ -145,7 +149,7 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
         Colors.blueAccent,
         Colors.greenAccent,
       ];
-      print("PORT : $portfolios");
+
       // TODO make key different as same keys will collide.
       return PieChartSectionData(
         color: colors[i % 4],

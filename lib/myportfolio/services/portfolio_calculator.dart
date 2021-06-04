@@ -10,11 +10,8 @@ class PortfolioCalculations {
   /// Calculates total value invested in a portfolio
   num calculateTotal(PortfolioModel portfolio) {
     num total = 0;
-    print(portfolio.stocks);
-    print(portfolio.data);
-    portfolio.stocks.forEach((element) {
-      print(element);
 
+    portfolio.stocks.forEach((element) {
       total = total +
           (portfolio.data[element]["price"] * portfolio.data[element]["quant"]);
     });
@@ -41,6 +38,7 @@ class PortfolioCalculations {
     final yfin = YahooFin();
     for (var i in portfolio.stocks) {
       final info = yfin.getStockInfo(ticker: i);
+
       final quote = await yfin.getPrice(stockInfo: info);
       totalCurrent += quote.currentPrice * portfolio.data[i]["quant"];
     }
@@ -50,11 +48,15 @@ class PortfolioCalculations {
   Future<List<Map<String, num>>> calculateCurrentModels(
       List<PortfolioModel> portfolios) async {
     List<Map<String, num>> updatedPortfoliosTotal = [];
-
-    for (var i in portfolios) {
-      num tot = await calculateCurrent(i);
-      updatedPortfoliosTotal.add({i.portfolioName: tot});
+    try {
+      for (var i in portfolios) {
+        num tot = await calculateCurrent(i);
+        updatedPortfoliosTotal.add({i.portfolioName: tot});
+      }
+    } catch (e) {
+      return [];
     }
+
     return updatedPortfoliosTotal;
   }
 }
