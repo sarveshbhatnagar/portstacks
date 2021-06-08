@@ -23,6 +23,8 @@ class _NewPositionState extends State<NewPosition> {
   num price;
   num quantity;
 
+  bool alreadyExists = false;
+
   bool portName = false;
 
   bool symbolExists = false;
@@ -69,6 +71,12 @@ class _NewPositionState extends State<NewPosition> {
                 final yfin = YahooFin();
                 if (symbol != "") {
                   symbolExists = await yfin.checkSymbol(symbol);
+                  // TODO if symbol in portfolio.
+                  if (widget.portfolio.stocks.contains(symbol)) {
+                    alreadyExists = true;
+                  } else {
+                    alreadyExists = false;
+                  }
                   StockInfo info = yfin.getStockInfo(ticker: symbol);
                   quote = await yfin.getPrice(stockInfo: info);
                 } else {
@@ -129,12 +137,24 @@ class _NewPositionState extends State<NewPosition> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            widget.portfolio.stocks.add(symbol);
+                            if (alreadyExists) {
+                              final p1 = widget.portfolio.data[symbol]["price"];
+                              final q1 = widget.portfolio.data[symbol]["quant"];
+                              final avg_price =
+                                  ((p1 * q1) + (price * quantity)) /
+                                      (q1 + quantity);
+                              widget.portfolio.data[symbol] = {
+                                "price": avg_price,
+                                "quant": q1 + quantity
+                              };
+                            } else {
+                              widget.portfolio.stocks.add(symbol);
 
-                            widget.portfolio.data[symbol] = {
-                              "price": price,
-                              "quant": quantity
-                            };
+                              widget.portfolio.data[symbol] = {
+                                "price": price,
+                                "quant": quantity
+                              };
+                            }
 
                             String userid =
                                 BlocProvider.of<AuthenticateBloc>(context)

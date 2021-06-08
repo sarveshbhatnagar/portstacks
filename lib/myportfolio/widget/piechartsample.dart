@@ -153,7 +153,7 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
       // TODO make key different as same keys will collide.
       return PieChartSectionData(
         color: colors[i % 4],
-        value: portfolios[i][portfolios[i].keys.first],
+        value: portfolios[i][portfolios[i].keys.first].toDouble(),
         title: portfolios[i].keys.first,
         radius: radius,
         titleStyle: TextStyle(

@@ -110,7 +110,7 @@ class _MyPortfolioState extends State<MyPortfolio> {
                   child: ListTile(
                     title: Text("${widget.portfolio.stocks[index]} "),
                     subtitle: Text(
-                        "Quantity: ${widget.portfolio.data[widget.portfolio.stocks[index]]['quant']} Rate: ${widget.portfolio.data[widget.portfolio.stocks[index]]['price']}"),
+                        "Quantity: ${widget.portfolio.data[widget.portfolio.stocks[index]]['quant']} Rate: ${(widget.portfolio.data[widget.portfolio.stocks[index]]['price']).toStringAsFixed(2)}"),
                   ),
                   onDismissed: (_) {
                     String stock = widget.portfolio.stocks[index];
