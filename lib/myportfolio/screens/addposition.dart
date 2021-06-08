@@ -13,6 +13,7 @@ class AddPosition extends StatefulWidget {
 class _AddPositionState extends State<AddPosition> {
   String symbol = "";
   String portfolioName = "";
+  String realName = "";
 
   num price;
   num quantity;
@@ -71,6 +72,9 @@ class _AddPositionState extends State<AddPosition> {
                       final yfin = YahooFin();
                       if (symbol != "") {
                         symbolExists = await yfin.checkSymbol(symbol);
+                        StockInfo info = yfin.getStockInfo(ticker: symbol);
+                        final q = await yfin.getPrice(stockInfo: info);
+                        // TODO meta data
                       } else {
                         symbolExists = false;
                       }
@@ -103,7 +107,9 @@ class _AddPositionState extends State<AddPosition> {
                           onChanged: (value) {
                             quantity = num.tryParse(value);
                           },
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                           // keyboardType: TextInputType.number,
                         ),
                         // TODO fetch current price button.
@@ -114,7 +120,9 @@ class _AddPositionState extends State<AddPosition> {
                           onChanged: (value) {
                             price = num.tryParse(value);
                           },
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
 
                         SizedBox(

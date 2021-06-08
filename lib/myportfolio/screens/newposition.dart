@@ -45,7 +45,7 @@ class _NewPositionState extends State<NewPosition> {
               horizontal: 30,
             ),
             child: TextFormField(
-              decoration: InputDecoration(hintText: "Symbol"),
+              decoration: InputDecoration(hintText: "Stock Ticker e.g. AAPL"),
               onChanged: (value) {
                 symbol = value;
               },
@@ -76,7 +76,9 @@ class _NewPositionState extends State<NewPosition> {
                           onChanged: (value) {
                             quantity = num.tryParse(value);
                           },
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                           // keyboardType: TextInputType.number,
                         ),
                         // TODO fetch current price button.
@@ -87,7 +89,9 @@ class _NewPositionState extends State<NewPosition> {
                           onChanged: (value) {
                             price = num.tryParse(value);
                           },
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
 
                         // TODO date picker
