@@ -4,6 +4,7 @@ import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
 import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
 import 'package:portstacks1/myportfolio/models/portfoliomodel.dart';
 import 'package:yahoofin/yahoofin.dart';
+import 'package:yahoofin/src/models/stockQuote.dart';
 
 class AddPosition extends StatefulWidget {
   @override
@@ -14,9 +15,11 @@ class _AddPositionState extends State<AddPosition> {
   String symbol = "";
   String portfolioName = "";
   String realName = "";
-
+  StockQuote quote = StockQuote();
   num price;
   num quantity;
+
+  bool quoteFetched = false;
 
   bool portName = false;
 
@@ -64,7 +67,8 @@ class _AddPositionState extends State<AddPosition> {
                     horizontal: 30,
                   ),
                   child: TextFormField(
-                    decoration: InputDecoration(hintText: "Symbol"),
+                    decoration: InputDecoration(
+                        hintText: "e.g. AAPL", helperText: "Stock Ticker"),
                     onChanged: (value) {
                       symbol = value;
                     },
@@ -73,10 +77,11 @@ class _AddPositionState extends State<AddPosition> {
                       if (symbol != "") {
                         symbolExists = await yfin.checkSymbol(symbol);
                         StockInfo info = yfin.getStockInfo(ticker: symbol);
-                        final q = await yfin.getPrice(stockInfo: info);
-                        // TODO meta data
+                        quote = await yfin.getPrice(stockInfo: info);
+                        quoteFetched = true;
                       } else {
                         symbolExists = false;
+                        quoteFetched = false;
                       }
 
                       setState(() {});
@@ -101,8 +106,20 @@ class _AddPositionState extends State<AddPosition> {
                     child: Column(
                       children: [
                         TextFormField(
+                          readOnly: true,
                           decoration: InputDecoration(
-                            hintText: "Number of Shares",
+                            hintText: quote.metaData.shortName,
+                            hintStyle: TextStyle(
+                              color: Colors.black,
+                            ),
+                            helperText: "Company Name",
+                          ),
+                        ),
+
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "e.g. 8",
+                            helperText: "Number of Shares",
                           ),
                           onChanged: (value) {
                             quantity = num.tryParse(value);
@@ -115,7 +132,8 @@ class _AddPositionState extends State<AddPosition> {
                         // TODO fetch current price button.
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: "Buy Price",
+                            hintText: "e.g. " + quote.currentPrice.toString(),
+                            helperText: "Buy Price",
                           ),
                           onChanged: (value) {
                             price = num.tryParse(value);
@@ -148,7 +166,7 @@ class _AddPositionState extends State<AddPosition> {
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Colors.black54)),
-                        )
+                        ),
                       ],
                     ),
                   ),
