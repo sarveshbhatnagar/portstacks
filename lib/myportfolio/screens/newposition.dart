@@ -31,6 +31,18 @@ class _NewPositionState extends State<NewPosition> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          splashRadius: 1,
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
