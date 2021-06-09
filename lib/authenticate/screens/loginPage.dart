@@ -120,6 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: Text("Return to homepage"),
                     ),
+                    state is AuthenticateError
+                        ? Text(state.errorMessage)
+                        : Text(""),
                   ],
                 ),
               ),
