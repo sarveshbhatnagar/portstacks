@@ -65,7 +65,7 @@ class _NewPositionState extends State<NewPosition> {
               decoration: InputDecoration(
                   hintText: "e.g. AAPL", helperText: "Stock Ticker"),
               onChanged: (value) {
-                symbol = value;
+                symbol = value.toUpperCase();
               },
               onEditingComplete: () async {
                 final yfin = YahooFin();
@@ -140,11 +140,11 @@ class _NewPositionState extends State<NewPosition> {
                             if (alreadyExists) {
                               final p1 = widget.portfolio.data[symbol]["price"];
                               final q1 = widget.portfolio.data[symbol]["quant"];
-                              final avg_price =
+                              final avgPrice =
                                   ((p1 * q1) + (price * quantity)) /
                                       (q1 + quantity);
                               widget.portfolio.data[symbol] = {
-                                "price": avg_price,
+                                "price": avgPrice,
                                 "quant": q1 + quantity
                               };
                             } else {

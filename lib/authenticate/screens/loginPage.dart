@@ -114,6 +114,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Return to homepage"),
+                    ),
                   ],
                 ),
               ),

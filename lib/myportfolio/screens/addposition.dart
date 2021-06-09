@@ -82,7 +82,7 @@ class _AddPositionState extends State<AddPosition> {
                     decoration: InputDecoration(
                         hintText: "e.g. AAPL", helperText: "Stock Ticker"),
                     onChanged: (value) {
-                      symbol = value;
+                      symbol = value.toUpperCase();
                     },
                     onEditingComplete: () async {
                       final yfin = YahooFin();

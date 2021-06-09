@@ -167,6 +167,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Return to homepage"),
+                      ),
                     ],
                   ),
                 ),
