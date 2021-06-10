@@ -16,11 +16,18 @@ class PortfolioSummary extends StatefulWidget {
 class _PortfolioSummaryState extends State<PortfolioSummary> {
   PortfolioCalculations calculations = PortfolioCalculations();
   num totalCurrent = 0;
+  num sharpeRatio = 0;
   @override
   void initState() {
     totals().then((value) {
       totalCurrent = value;
-      setState(() {});
+    });
+
+    widget.portfolio.sharpeRatioAverage().then((value) {
+      setState(() {
+        sharpeRatio = value;
+        print(value);
+      });
     });
 
     super.initState();
@@ -80,6 +87,7 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
                     Text(
                         "Total Cost: ${calculations.calculateTotal(widget.portfolio).toStringAsFixed(2)}"),
                     Text("Returns: ${totalCurrent.toStringAsFixed(1)}"),
+                    Text("Sharpe : ${sharpeRatio.toStringAsFixed(2)}"),
                   ],
                 ),
               )

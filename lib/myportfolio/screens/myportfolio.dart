@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
 import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
 import 'package:portstacks1/myportfolio/models/portfoliomodel.dart';
+import 'package:portstacks1/myportfolio/services/portfolio_calculator.dart';
 import 'package:portstacks1/router/app_router.dart';
 
 // TODO update on tap, add positions etc.
@@ -15,6 +16,28 @@ class MyPortfolio extends StatefulWidget {
 }
 
 class _MyPortfolioState extends State<MyPortfolio> {
+  Map<String, num> sharpRatio = {};
+
+  @override
+  initState() {
+    super.initState();
+
+    portSharpeRatio().then((value) {
+      setState(() {
+        sharpRatio = value;
+      });
+    });
+  }
+
+  Future<Map<String, num>> portSharpeRatio() async {
+    Map<String, num> sharpeRatio = {};
+    final pa = PortfolioAnalysis();
+    for (var i in widget.portfolio.stocks) {
+      sharpeRatio[i] = await pa.sharpeRatioOfStock(i);
+    }
+    return sharpeRatio;
+  }
+
   bool isPortEmpty = true;
   @override
   Widget build(BuildContext context) {
@@ -111,6 +134,10 @@ class _MyPortfolioState extends State<MyPortfolio> {
                     title: Text("${widget.portfolio.stocks[index]} "),
                     subtitle: Text(
                         "Quantity: ${widget.portfolio.data[widget.portfolio.stocks[index]]['quant']} Rate: ${(widget.portfolio.data[widget.portfolio.stocks[index]]['price']).toStringAsFixed(2)}"),
+                    trailing: sharpRatio.length > 0
+                        ? Text(
+                            "Sharpe Ratio : ${sharpRatio[widget.portfolio.stocks[index]].toStringAsFixed(2)}")
+                        : Text(""),
                   ),
                   onDismissed: (_) {
                     String stock = widget.portfolio.stocks[index];
