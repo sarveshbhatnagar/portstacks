@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
 import 'package:portstacks1/authenticate/screens/basePage.dart';
 import 'package:portstacks1/myportfolio/bloc/myportfolio_bloc.dart';
+import 'package:portstacks1/myportfolio/models/portfoliomodel.dart';
 import 'package:portstacks1/myportfolio/screens/portfoliohome.dart';
+import 'package:portstacks1/myportfolio/widget/summarywidget.dart';
 import 'package:portstacks1/router/app_router.dart';
 
 void main() async {
@@ -46,7 +48,14 @@ class _MyAppState extends State<MyApp> {
               if (state is AuthenticateLoggedIn) {
                 return PortfolioHome();
               }
+              // TODO return basepage
               return BasePage();
+              // return Scaffold(
+              //   body: Center(
+              //     child: SummaryWidget(
+              //         name: "Portfolio Name", portfolio: PortfolioModel()),
+              //   ),
+              // );
             },
           ),
         ),

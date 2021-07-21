@@ -20,13 +20,14 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   @override
   void initState() {
     totals().then((value) {
-      totalCurrent = value;
+      setState(() {
+        totalCurrent = value;
+      });
     });
 
     widget.portfolio.sharpeRatioAverage().then((value) {
       setState(() {
         sharpeRatio = value;
-        print(value);
       });
     });
 
@@ -40,61 +41,80 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   @override
   Widget build(BuildContext context) {
     // calculateTotal();
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 3),
-      child: Card(
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/myportfolio",
-                    arguments: AppRouterArguments(portfolio: widget.portfolio))
-                .then((value) {
-              setState(() {
-                totals().then((value) => totalCurrent = value);
-              });
-            });
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Row(
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 3),
+          child: Card(
+            child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, "/myportfolio",
+                        arguments:
+                            AppRouterArguments(portfolio: widget.portfolio))
+                    .then((value) {
+                  if (this.mounted) {
+                    totals().then((value) {
+                      setState(() {
+                        totalCurrent = value;
+                      });
+                    });
+                  }
+                });
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      child: Text(
-                        widget.portfolio.portfolioName,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          child: Text(
+                            widget.portfolio.portfolioName,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                          padding: EdgeInsets.only(
+                            left: 10,
+                          ),
                         ),
                       ),
-                      padding: EdgeInsets.only(
-                        left: 10,
-                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            "Total Cost: ${calculations.calculateTotal(widget.portfolio).toStringAsFixed(2)}"),
+                        Text("Returns: ${totalCurrent.toStringAsFixed(1)}"),
+                      ],
                     ),
+                  ),
+                  Divider(
+                    thickness: 1,
+                  ),
+                  Wrap(
+                    spacing: 30,
+                    children: [
+                      Text(
+                          "Sharpe Performance : ${calculations.sharpeRange(sharpeRatio)}"),
+                      Text("Sharpe Ratio : ${sharpeRatio.toStringAsFixed(2)}"),
+                    ],
                   ),
                 ],
               ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        "Total Cost: ${calculations.calculateTotal(widget.portfolio).toStringAsFixed(2)}"),
-                    Text("Returns: ${totalCurrent.toStringAsFixed(1)}"),
-                    Text("Sharpe : ${sharpeRatio.toStringAsFixed(2)}"),
-                  ],
-                ),
-              )
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

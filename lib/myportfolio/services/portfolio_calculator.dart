@@ -24,7 +24,9 @@ class PortfolioCalculations {
     for (var i in portfolio.stocks) {
       final info = yfin.getStockInfo(ticker: i);
       final quote = await yfin.getPrice(stockInfo: info);
-
+      if (quote.currentPrice == null || portfolio.data[i]["quant"] == null) {
+        return 0;
+      }
       totalCurrent += quote.currentPrice * portfolio.data[i]["quant"];
       totalActual += portfolio.data[i]["price"] * portfolio.data[i]["quant"];
     }
@@ -41,6 +43,20 @@ class PortfolioCalculations {
       totalCurrent += quote.currentPrice * portfolio.data[i]["quant"];
     }
     return totalCurrent;
+  }
+
+  String sharpeRange(num sharpeRatio) {
+    if (sharpeRatio < 0.4) {
+      return "Bad";
+    } else if (sharpeRatio < 0.9) {
+      return "Okish";
+    } else if (sharpeRatio < 2) {
+      return "Good";
+    } else if (sharpeRatio < 3) {
+      return "Very Good";
+    } else {
+      return "Excellent";
+    }
   }
 
   Future<List<Map<String, num>>> calculateCurrentModels(
@@ -97,14 +113,20 @@ class PortfolioAnalysis {
     return value;
   }
 
-  Future<num> sharpeRatioOfStock(String stock) async {
+  Future<num> sharpeRatioOfStock(String stock,
+      {StockRange period = StockRange.threeMonth}) async {
     final hist = yfin.initStockHistory(ticker: stock);
-    final chart = await yfin.getChartQuotes(stockHistory: hist);
+    final chart = await yfin.getChartQuotes(stockHistory: hist, period: period);
     // TODO change interval or period.
+    if (chart.chartQuotes == null) {
+      return 0;
+    }
     final st = Stats.fromData(chart.chartQuotes.close);
-    final ret = chart.chartQuotes.close[chart.chartQuotes.close.length - 1] /
-        chart.chartQuotes.close[0];
 
-    return ret / st.standardDeviation;
+    final ret = chart.chartQuotes.close[chart.chartQuotes.close.length - 1] -
+        chart.chartQuotes.close[0];
+    final rfret = chart.chartQuotes.close[0] * 0.04;
+
+    return (ret - rfret) / st.standardDeviation;
   }
 }

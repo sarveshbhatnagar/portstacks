@@ -25,6 +25,8 @@ class _AddPositionState extends State<AddPosition> {
 
   bool symbolExists = false;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +117,7 @@ class _AddPositionState extends State<AddPosition> {
                     horizontal: 30,
                   ),
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       children: [
                         TextFormField(
@@ -136,6 +139,12 @@ class _AddPositionState extends State<AddPosition> {
                           onChanged: (value) {
                             quantity = num.tryParse(value);
                           },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Number of shares cannot be empty";
+                            }
+                            return null;
+                          },
                           keyboardType: TextInputType.numberWithOptions(
                             decimal: true,
                           ),
@@ -147,8 +156,15 @@ class _AddPositionState extends State<AddPosition> {
                             hintText: "e.g. " + quote.currentPrice.toString(),
                             helperText: "Buy Price",
                           ),
+                          readOnly: quote.currentPrice == null ? true : false,
                           onChanged: (value) {
                             price = num.tryParse(value);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Buy price cannot be empty";
+                            }
+                            return null;
                           },
                           keyboardType: TextInputType.numberWithOptions(
                             decimal: true,
@@ -160,19 +176,22 @@ class _AddPositionState extends State<AddPosition> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            PortfolioModel portfolio = PortfolioModel(stocks: [
-                              symbol,
-                            ], data: {
-                              symbol: {"price": price, "quant": quantity}
-                            }, portfolioName: portfolioName, id: "Any");
+                            if (_formKey.currentState.validate()) {
+                              PortfolioModel portfolio =
+                                  PortfolioModel(stocks: [
+                                symbol,
+                              ], data: {
+                                symbol: {"price": price, "quant": quantity}
+                              }, portfolioName: portfolioName, id: "Any");
 
-                            String userid =
-                                BlocProvider.of<AuthenticateBloc>(context)
-                                    .state
-                                    .userId;
-                            BlocProvider.of<MyportfolioBloc>(context)
-                                .add(MyportfolioNew(userid, portfolio));
-                            Navigator.pop(context);
+                              String userid =
+                                  BlocProvider.of<AuthenticateBloc>(context)
+                                      .state
+                                      .userId;
+                              BlocProvider.of<MyportfolioBloc>(context)
+                                  .add(MyportfolioNew(userid, portfolio));
+                              Navigator.pop(context);
+                            }
                           },
                           child: Text("Add Position"),
                           style: ButtonStyle(

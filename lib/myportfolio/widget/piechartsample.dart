@@ -41,8 +41,26 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
   }
 
   @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    final calculations = PortfolioCalculations();
+    calculations.calculateCurrentModels(widget.portfolios).then((value) {
+      portfolioCurrent = value;
+
+      if (mounted) {
+        setState(() {
+          isInitialized = true;
+        });
+      }
+    });
+    super.setState(fn);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return widget.portfolios.length > 0
+    return widget.portfolios.length > 0 &&
+            portfolioCurrent != null &&
+            portfolioCurrent.length > 0
         ? AspectRatio(
             aspectRatio: 1.3,
             child: Card(
@@ -98,10 +116,16 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
               ),
             ),
           )
-        : Image.asset(
-            "images/savings.png",
+        : Container(
             height: MediaQuery.of(context).size.height / 2.5,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
+    // : Image.asset(
+    //     "images/savings.png",
+    //     height: MediaQuery.of(context).size.height / 2.5,
+    //   );
   }
 
   List<Widget> getIndicators() {
@@ -139,6 +163,9 @@ class _PieChartPortfolioState extends State<PieChartPortfolio> {
 
   List<PieChartSectionData> showingSectionsCurrent(
       List<Map<String, num>> portfolios) {
+    if (portfolios.length == 0) {
+      return null;
+    }
     return List.generate(portfolios.length, (i) {
       final isTouched = i == touchedIndex;
       final double fontSize = isTouched ? 20 : 10;

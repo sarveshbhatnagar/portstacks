@@ -136,7 +136,7 @@ class _MyPortfolioState extends State<MyPortfolio> {
                         "Quantity: ${widget.portfolio.data[widget.portfolio.stocks[index]]['quant']} Rate: ${(widget.portfolio.data[widget.portfolio.stocks[index]]['price']).toStringAsFixed(2)}"),
                     trailing: sharpRatio.length > 0
                         ? Text(
-                            "Sharpe Ratio : ${sharpRatio[widget.portfolio.stocks[index]].toStringAsFixed(2)}")
+                            "Sharpe Ratio : ${sharpRatio[widget.portfolio.stocks[index]]?.toStringAsFixed(2)}")
                         : Text(""),
                   ),
                   onDismissed: (_) {

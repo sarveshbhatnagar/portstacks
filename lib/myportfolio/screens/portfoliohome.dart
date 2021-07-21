@@ -14,6 +14,9 @@ class PortfolioHome extends StatefulWidget {
 
 class _PortfolioHomeState extends State<PortfolioHome> {
   List<Map<String, num>> currentvalues;
+
+  bool dismissed = false;
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +60,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         body: BlocBuilder<MyportfolioBloc, MyportfolioState>(
           builder: (context, state) {
             if (state is MyportfolioLoaded) {
+              dismissed = false;
+              // print("Built");
+              // print("LENGTH");
+              // print(state.portfolios.first.portfolioName);
               return ListView(
                 physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
                 children: [
@@ -98,7 +105,9 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                                         userid,
                                         state.portfolios[index].id,
                                         state.portfolios));
+
                                 // state.portfolios.removeAt(index);
+
                                 // FOR some reason this is working.
 
                                 setState(() {

@@ -29,6 +29,8 @@ class _NewPositionState extends State<NewPosition> {
 
   bool symbolExists = false;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +95,7 @@ class _NewPositionState extends State<NewPosition> {
                     horizontal: 30,
                   ),
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       children: [
                         TextFormField(
@@ -112,6 +115,12 @@ class _NewPositionState extends State<NewPosition> {
                           onChanged: (value) {
                             quantity = num.tryParse(value);
                           },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Number of shares cannot be empty";
+                            }
+                            return null;
+                          },
                           keyboardType: TextInputType.numberWithOptions(
                             decimal: true,
                           ),
@@ -123,8 +132,15 @@ class _NewPositionState extends State<NewPosition> {
                             hintText: "e.g. " + quote.currentPrice.toString(),
                             helperText: "Buy Price",
                           ),
+                          readOnly: quote.currentPrice == null ? true : false,
                           onChanged: (value) {
                             price = num.tryParse(value);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Buy price is empty";
+                            }
+                            return null;
                           },
                           keyboardType: TextInputType.numberWithOptions(
                             decimal: true,
@@ -137,32 +153,36 @@ class _NewPositionState extends State<NewPosition> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            if (alreadyExists) {
-                              final p1 = widget.portfolio.data[symbol]["price"];
-                              final q1 = widget.portfolio.data[symbol]["quant"];
-                              final avgPrice =
-                                  ((p1 * q1) + (price * quantity)) /
-                                      (q1 + quantity);
-                              widget.portfolio.data[symbol] = {
-                                "price": avgPrice,
-                                "quant": q1 + quantity
-                              };
-                            } else {
-                              widget.portfolio.stocks.add(symbol);
+                            if (_formKey.currentState.validate()) {
+                              if (alreadyExists) {
+                                final p1 =
+                                    widget.portfolio.data[symbol]["price"];
+                                final q1 =
+                                    widget.portfolio.data[symbol]["quant"];
+                                final avgPrice =
+                                    ((p1 * q1) + (price * quantity)) /
+                                        (q1 + quantity);
+                                widget.portfolio.data[symbol] = {
+                                  "price": avgPrice,
+                                  "quant": q1 + quantity
+                                };
+                              } else {
+                                widget.portfolio.stocks.add(symbol);
 
-                              widget.portfolio.data[symbol] = {
-                                "price": price,
-                                "quant": quantity
-                              };
+                                widget.portfolio.data[symbol] = {
+                                  "price": price,
+                                  "quant": quantity
+                                };
+                              }
+
+                              String userid =
+                                  BlocProvider.of<AuthenticateBloc>(context)
+                                      .state
+                                      .userId;
+                              BlocProvider.of<MyportfolioBloc>(context).add(
+                                  MyportfolioUpdate(userid, widget.portfolio));
+                              Navigator.pop(context);
                             }
-
-                            String userid =
-                                BlocProvider.of<AuthenticateBloc>(context)
-                                    .state
-                                    .userId;
-                            BlocProvider.of<MyportfolioBloc>(context).add(
-                                MyportfolioUpdate(userid, widget.portfolio));
-                            Navigator.pop(context);
                           },
                           child: Text("Add Position"),
                           style: ButtonStyle(
