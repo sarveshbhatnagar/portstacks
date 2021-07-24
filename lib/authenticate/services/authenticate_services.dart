@@ -22,8 +22,8 @@ class AuthService {
   /// [false] if failure.
   bool logoutUser() {
     try {
-      _auth.signOut();
       hs.clearLogin();
+      _auth.signOut();
       return true;
     } catch (error) {
       return false;

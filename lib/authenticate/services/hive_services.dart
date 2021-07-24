@@ -1,7 +1,18 @@
 import 'package:hive/hive.dart';
 
 class HiveAuthServices {
+  // Future box;
+
   /// The authentication service.
+  ///
+
+  // HiveAuthServices() {
+  //   this.box = _init();
+  // }
+
+  // Future _init() async {
+  //   return await Hive.openBox("authbox");
+  // }
   var box = Hive.box("authbox");
 
   /// Puts login information into the database.
