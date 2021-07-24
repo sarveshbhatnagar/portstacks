@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
+import 'package:portstacks1/authenticate/services/hive_services.dart';
 
 class BasePage extends StatefulWidget {
   @override
@@ -6,6 +9,21 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    HiveAuthServices hs = HiveAuthServices();
+
+    String email = hs.getEmail();
+    String password = hs.getPassword();
+
+    if (email != null && password != null) {
+      BlocProvider.of<AuthenticateBloc>(context)
+          .add(AuthenticateUserLogin(email: email, password: password));
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

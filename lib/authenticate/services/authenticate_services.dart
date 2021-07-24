@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:portstacks1/authenticate/services/hive_services.dart';
 
 /// Class to handle authentication steps.
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  HiveAuthServices hs = HiveAuthServices();
 
   /// Login user with email and password, returns user credential.
   Future<UserCredential> loginUser(String email, String password) async {
@@ -21,6 +23,7 @@ class AuthService {
   bool logoutUser() {
     try {
       _auth.signOut();
+      hs.clearLogin();
       return true;
     } catch (error) {
       return false;
