@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portstacks1/authenticate/bloc/authenticate_bloc.dart';
+import 'package:portstacks1/authenticate/services/hive_services.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String confirmation = "";
 
   String errorMessage = "No Error";
+
+  HiveAuthServices hs = HiveAuthServices();
 
   bool showError = false;
   @override
@@ -136,6 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               email: email,
                               password: password,
                             ));
+                            hs.putlogin(email, password);
                           } else {
                             setState(() {
                               showError = true;
